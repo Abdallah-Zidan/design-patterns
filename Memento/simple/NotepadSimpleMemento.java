@@ -1,4 +1,5 @@
 package simple;
+
 import java.util.ArrayList;
 
 class Notepad {
@@ -22,24 +23,26 @@ class Notepad {
     }
 
     public Memento createMemento() {
-        return new Memento(this.text);
+        return new Memento(this, this.text);
     }
 
     public void restore(Memento memento) {
-        this.text = memento.getText();
+        memento.restore();
     }
 
 }
 
 class Memento {
-    final private String text;
+    final private String text; // this can be a custom snapshot specified by the notepad class
+    final private Notepad notepad; // this can be any class implements interface of backupble object
 
-    public Memento(String text) {
+    public Memento(Notepad notepad, String text) {
         this.text = text;
+        this.notepad = notepad;
     }
 
-    public String getText() {
-        return this.text;
+    public void restore() {
+        this.notepad.setText(this.text);
     }
 }
 

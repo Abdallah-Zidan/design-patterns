@@ -23,31 +23,32 @@ class Notepad {
     }
 
     public Memento createMemento() {
-        return new Memento(this.text);
+        return new Memento(this, this.text);
     }
 
     public void restore(Memento memento) {
-        this.text = memento.getText();
-    }
-
-    class Memento {
-        final private String text; // this can be a custom snapshot object provided by the notepad
-                                   // containing the attributes that need to be saved as a state
-
-        private Memento(String text) {
-            this.text = text;
-        }
-
-        private String getText() {
-            return this.text;
-        }
+        memento.restore();
     }
 
 }
 
+class Memento {
+    final private String text; // this can be a custom snapshot object provided by the notepad
+    final private Notepad notepad; // containing the attributes that need to be saved as a state
+
+    public Memento(Notepad notepad, String text) {
+        this.notepad = notepad;
+        this.text = text;
+    }
+
+    public void restore() {
+        this.notepad.setText(this.text);
+    }
+}
+
 class CareTaker {
-    private ArrayList<Notepad.Memento> mementos = new ArrayList<>();
-    private Notepad notepad;
+    private ArrayList<Memento> mementos = new ArrayList<>();
+    final private Notepad notepad;
     private int currMemento = -1;
 
     public CareTaker(Notepad notepad) {
@@ -59,7 +60,7 @@ class CareTaker {
         this.currMemento = mementos.size() - 1;
     }
 
-    public Notepad.Memento getMemento(int index) {
+    public Memento getMemento(int index) {
         this.currMemento = index;
         return this.mementos.get(index);
     }
