@@ -12,8 +12,8 @@ interface Observable {
     void notifyObservers(String message);
 }
 
-class Facebook implements Observable {
-    ArrayList<Observer> observers = new ArrayList<>();
+abstract class SocialObservable implements Observable {
+    private ArrayList<Observer> observers = new ArrayList<>();
 
     @Override
     public void subscribe(Observer o) {
@@ -31,32 +31,16 @@ class Facebook implements Observable {
             observer.update(message);
         }
     }
+}
+
+class Facebook extends SocialObservable {
 
     public void update(String message) {
         this.notifyObservers(message + "from facebook ");
     }
 }
 
-class Youtube implements Observable {
-    ArrayList<Observer> observers = new ArrayList<>();
-
-    @Override
-    public void subscribe(Observer o) {
-        this.observers.add(o);
-    }
-
-    @Override
-    public void unsubscribe(Observer o) {
-
-        this.observers.remove(o);
-    }
-
-    @Override
-    public void notifyObservers(String message) {
-        for (Observer observer : observers) {
-            observer.update(message);
-        }
-    }
+class Youtube extends SocialObservable {
 
     public void update(String message) {
         this.notifyObservers(message + "from youtube ");

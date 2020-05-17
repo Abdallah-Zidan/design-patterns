@@ -2,17 +2,16 @@ class Main {
     public static void main(String[] args) {
         Facebook facebook = new Facebook();
         Youtube youtube = new Youtube();
-        Manager manager = new Manager();
-        User user = new User();
-        user.subscribe(facebook);
-        manager.subscribe(youtube);
+        Manager manager = new Manager(youtube);
+        User user = new NormalUser(facebook);
+        user.subscribe();
+        manager.subscribe();
         facebook.update("new message ");
         youtube.update("new video ");
-        user.subscribe(youtube);
-        youtube.update("new update ");
-        manager.unsbuscribe(youtube);
-        youtube.update("server is down ");
-        manager.subscribe(facebook);
-        facebook.update("new emojis ");
+        user.unsubscribe();
+        user.setSubject(youtube);
+        user.subscribe();
+        facebook.update("not sent.. ");
+        youtube.update("sent to both ");
     }
 }
