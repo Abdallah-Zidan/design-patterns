@@ -1,4 +1,18 @@
 package command;
+
+import java.util.concurrent.ThreadFactory;
+
+class Stereo {
+
+    public void on() {
+        System.out.println("stereo on");
+    }
+
+    public void off() {
+        System.out.println("stereo off");
+    }
+}
+
 // receiver
 class Light {
 
@@ -30,23 +44,30 @@ class Light {
 
 interface Command {
     public void execute();
+
+    // public void undo();
 }
 
-class LightOnCommand implements Command {
+// class LightOnCommand implements Command {
 
-    Light light;
+// Light light;
 
-    public LightOnCommand(Light light) {
-        // System.out.println("light on command");
-        this.light = light;
-    }
+// public LightOnCommand(Light light) {
+// // System.out.println("light on command");
+// this.light = light;
+// }
 
-    @Override
-    public void execute() {
-        light.on();
-    }
+// @Override
+// public void execute() {
+// light.on();
+// }
 
-}
+// @Override
+// public void undo() {
+// light.off();
+// }
+
+// }
 
 class LightOffCommand implements Command {
 
@@ -62,7 +83,13 @@ class LightOffCommand implements Command {
         light.off();
     }
 
+    // @Override
+    // public void undo() {
+    // light.on();
+    // }
+
 }
+
 // receiver
 class GarageDoor {
     void up() {
@@ -100,6 +127,14 @@ class GarageDoorOpen implements Command {
         this.gd.stop();
         this.gd.lightOn();
     }
+
+    // @Override
+    // public void undo() {
+    // this.gd.lightOff();
+    // this.gd.down();
+    // this.gd.stop();
+    // }
+
 }
 
 class GarageDoorClose implements Command {
@@ -116,13 +151,25 @@ class GarageDoorClose implements Command {
         this.gd.down();
         this.gd.stop();
     }
-}
 
+    // @Override
+    // public void undo() {
+    // this.gd.up();
+    // this.gd.stop();
+    // this.gd.lightOn();
+    // }
+}
 
 class NoCommand implements Command {
     @Override
     public void execute() {
         System.out.println("doing nothing ... assign me a command");
+    }
+
+    @Override
+    public void undo() {
+        System.out.println("doing nothing ... assign me a command");
+
     }
 }
 
@@ -130,6 +177,7 @@ class Remote {
 
     Command[] onCommands;
     Command[] offCommands;
+    Command previousCommand;
 
     public Remote() {
         onCommands = new Command[7];
@@ -148,10 +196,19 @@ class Remote {
 
     public void onPressed(int slot) {
         onCommands[slot].execute();
+        this.previousCommand = offCommands[slot];
     }
 
     public void offPressed(int slot) {
         offCommands[slot].execute();
+        this.previousCommand = onCommands[slot];
+    }
+
+    public void undo() {
+        if (previousCommand != null) {
+            this.previousCommand.undo();
+        }
+
     }
 
     @Override

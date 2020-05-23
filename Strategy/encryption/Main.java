@@ -14,6 +14,5 @@ class Main {
         vf.setEncryptionAlgorithm(new AdvancedEncryption());
         vf.displayInfo();
         vf.encrypt();
-
     }
 }
